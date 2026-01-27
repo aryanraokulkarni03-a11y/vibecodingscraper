@@ -1,0 +1,75 @@
+# Vibe-Coding Trend Scraper - Configuration
+
+# --- AI Models ---
+ai:
+  primary_model: "gemini"    # Options: gemini, groq, huggingface
+  fallback_enabled: true
+  
+  models:
+    gemini:
+      name: "gemini-2.5-flash"
+      env_key: "GEMINI_API_KEY"
+    groq:
+      name: "llama3-70b-8192"
+      env_key: "GROQ_API_KEY"
+      base_url: "https://api.groq.com/openai/v1"
+
+# --- Search Settings ---
+search:
+  max_items_per_source: 50
+  lookback_days: 7
+
+  # Keywords for "Vibe Coding" & "Service as a Software"
+  keywords:
+    - "vibe coding"
+    - "ai code generation"
+    - "service as a software"
+    - "replace agency with ai"
+    - "ai employee"
+    - "cursor ide"
+    - "bolt.new"
+
+# --- Sources ---
+reddit:
+  subreddits:
+    - "SaaS"
+    - "indiehackers"
+    - "startups"
+    - "SideProject"
+    - "microsaas"
+    - "Entrepreneur"
+    - "nocode"
+    - "webdev"
+    - "Cursor"
+    - "OpenAI"
+
+bluesky:
+  hashtags:
+    - "#buildinpublic"
+    - "#indiehackers"
+    - "#saas"
+    - "#startup"
+    - "launched my"
+    - "shipping"
+    - "#vibecoding"
+
+producthunt:
+  categories:
+    - "Artificial Intelligence"
+    - "SaaS"
+    - "Developer Tools"
+    - "Productivity"
+
+indiehackers:
+  groups:
+    - "building-in-public"
+    - "developers"
+
+hackernews:
+  min_points: 50
+  queries:
+    - "Show HN"
+    - "Launch HN"
+    - "SaaS"
+    - "AI startup"
+    - "indie maker"
