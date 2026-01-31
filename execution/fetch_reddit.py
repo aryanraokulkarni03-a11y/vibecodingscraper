@@ -12,7 +12,7 @@ from pathlib import Path
 import httpx
 from rich.console import Console
 
-from config import ScrapedItem, get_env, get_week_range, CONFIG, get_scraped_data_dir
+from config import ScrapedItem, get_week_range, get_env, get_scraped_data_dir, get_date_str, CONFIG
 
 console = Console()
 
@@ -156,7 +156,7 @@ async def fetch_reddit_posts(max_per_sub: int = 25) -> list[ScrapedItem]:
 
 async def save_results(items: list[ScrapedItem]) -> Path:
     """Save scraped items to JSON file."""
-    output_path = get_scraped_data_dir() / f"reddit_{datetime.now().strftime('%Y%m%d')}.json"
+    output_path = get_scraped_data_dir() / f"reddit_{get_date_str()}.json"
     
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump([item.model_dump(mode="json") for item in items], f, indent=2, default=str)

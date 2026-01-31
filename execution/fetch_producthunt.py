@@ -12,7 +12,7 @@ from pathlib import Path
 import httpx
 from rich.console import Console
 
-from config import ScrapedItem, get_week_range, get_env, CONFIG, get_scraped_data_dir
+from config import ScrapedItem, get_week_range, get_env, CONFIG, get_scraped_data_dir, get_date_str
 
 console = Console()
 
@@ -177,7 +177,7 @@ async def fetch_producthunt_posts(
 
 async def save_results(items: list[ScrapedItem]) -> Path:
     """Save scraped items to JSON file."""
-    output_path = get_scraped_data_dir() / f"producthunt_{datetime.now().strftime('%Y%m%d')}.json"
+    output_path = get_scraped_data_dir() / f"producthunt_{get_date_str()}.json"
     
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump([item.model_dump(mode="json") for item in items], f, indent=2, default=str)

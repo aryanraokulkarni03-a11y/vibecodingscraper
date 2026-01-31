@@ -13,7 +13,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
 from rich.console import Console
 
-from config import ScrapedItem, TMP_DIR
+from config import ScrapedItem, get_week_range, get_scraped_data_dir, get_date_str, CONFIG
 
 console = Console()
 
@@ -163,7 +163,7 @@ async def fetch_acquire_listings(max_items: int = 50) -> list[ScrapedItem]:
 
 async def save_results(items: list[ScrapedItem]) -> Path:
     """Save scraped items to JSON file."""
-    output_path = TMP_DIR / f"acquire_{datetime.now().strftime('%Y%m%d')}.json"
+    output_path = get_scraped_data_dir() / f"acquire_{get_date_str()}.json"
     
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump([item.model_dump(mode="json") for item in items], f, indent=2, default=str)

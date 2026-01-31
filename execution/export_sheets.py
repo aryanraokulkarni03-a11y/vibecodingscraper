@@ -15,7 +15,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from rich.console import Console
 
-from config import TMP_DIR, get_env, TrendReport, get_reports_dir
+from config import TrendReport, get_env, get_date_str, get_reports_dir
 
 console = Console()
 
@@ -81,7 +81,7 @@ def export_to_sheets(report: TrendReport, analysis: dict) -> str:
     
     Args:
         report: TrendReport object
-        analysis: Raw analysis dict from AI
+        analysis: Raw analysis dict
         
     Returns:
         URL of the spreadsheet
@@ -191,7 +191,7 @@ def export_to_sheets(report: TrendReport, analysis: dict) -> str:
 def main():
     """Run the export."""
     # Load latest report
-    today = datetime.now().strftime("%Y%m%d")
+    today = get_date_str()
     report_path = get_reports_dir() / f"trend_report_{today}.json"
     analysis_path = get_reports_dir() / f"analysis_{today}.json"
     

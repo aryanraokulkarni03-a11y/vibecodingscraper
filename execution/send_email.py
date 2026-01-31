@@ -204,9 +204,10 @@ async def send_email(
 async def main():
     """Run email sender."""
     # Load latest report
-    today = datetime.now().strftime("%Y%m%d")
-    report_path = TMP_DIR / f"trend_report_{today}.json"
-    analysis_path = TMP_DIR / f"analysis_{today}.json"
+    from config import get_reports_dir, get_date_str
+    today = get_date_str()
+    report_path = get_reports_dir() / f"trend_report_{today}.json"
+    analysis_path = get_reports_dir() / f"analysis_{today}.json"
     
     if not report_path.exists():
         console.print("[yellow]No report found. Run analyzer first.[/]")

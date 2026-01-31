@@ -17,9 +17,15 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 TMP_DIR.mkdir(exist_ok=True)
 CONFIG_PATH = PROJECT_ROOT / "config.yaml"
 
+def get_date_str(date_obj: datetime = None) -> str:
+    """Get standardized date string (DD-MM-YYYY)."""
+    if date_obj is None:
+        date_obj = datetime.now()
+    return date_obj.strftime("%d-%m-%Y")
+
 def get_output_dir() -> Path:
-    """Get the directory for today's output (YYYYMMDD)."""
-    today = datetime.now().strftime("%Y%m%d")
+    """Get the directory for today's output (DD-MM-YYYY)."""
+    today = get_date_str()
     output_dir = TMP_DIR / today
     output_dir.mkdir(exist_ok=True)
     return output_dir

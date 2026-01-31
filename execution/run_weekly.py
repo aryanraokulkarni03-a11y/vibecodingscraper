@@ -29,10 +29,23 @@ from fetch_acquire import fetch_acquire_listings, save_results as save_acquire
 from fetch_reddit import fetch_reddit_posts, save_results as save_reddit
 from fetch_hackernews import fetch_hackernews_posts, save_results as save_hn
 from fetch_bluesky import fetch_bluesky_posts, save_results as save_bsky
-from analyze_trends import load_scraped_data, analyze_trends, create_trend_report, save_analysis
+
+from fetch_trending_ai import fetch_trending_ai
+from analyze_trends import (
+    load_scraped_data, 
+    analyze_trends, 
+    create_trend_report, 
+    save_analysis,
+    load_trending_data,
+    analyze_trending_tools
+)
+
+from generate_report import main as generate_report
+
 from export_sheets import export_to_sheets
+
 from send_email import send_email
-from config import TrendReport, get_scraped_data_dir
+from config import TrendReport, get_scraped_data_dir, get_date_str
 
 console = Console()
 
@@ -80,7 +93,9 @@ async def run_scrapers() -> int:
         run_source_wrapper(fetch_reddit_posts, save_reddit, "Reddit"),
         run_source_wrapper(fetch_hackernews_posts, save_hn, "Hacker News"),
         run_source_wrapper(fetch_bluesky_posts, save_bsky, "Bluesky"),
+        run_source_wrapper(fetch_trending_ai, lambda x: None, "Trending AI"), # Trending AI saves its own file
     ]
+
     
     results = await asyncio.gather(*tasks)
     total_items = sum(results)
@@ -98,6 +113,15 @@ async def run_analysis() -> tuple[TrendReport, dict]:
         raise ValueError("No scraped data found. Run scrapers first.")
     
     analysis = await analyze_trends(data)
+    
+    # Analyze trending tools
+    trending_data = load_trending_data()
+    trending_analysis = await analyze_trending_tools(trending_data)
+    
+    # Merge analyses
+    if trending_analysis:
+        analysis["trending_tools_analysis"] = trending_analysis.get("trending_tools_analysis", [])
+        
     report = create_trend_report(analysis, data)
     await save_analysis(report, analysis)
     
@@ -218,21 +242,21 @@ def main():
     elif args.export:
         # Load existing report
         import json
-        from config import TMP_DIR
-        today = datetime.now().strftime("%Y%m%d")
-        with open(TMP_DIR / f"trend_report_{today}.json") as f:
+        from config import get_reports_dir
+        today = get_date_str()
+        with open(get_reports_dir() / f"trend_report_{today}.json") as f:
             report = TrendReport(**json.load(f))
-        with open(TMP_DIR / f"analysis_{today}.json") as f:
+        with open(get_reports_dir() / f"analysis_{today}.json") as f:
             analysis = json.load(f)
         asyncio.run(run_export(report, analysis))
     elif args.email:
         # Load existing report
         import json
-        from config import TMP_DIR
-        today = datetime.now().strftime("%Y%m%d")
-        with open(TMP_DIR / f"trend_report_{today}.json") as f:
+        from config import get_reports_dir
+        today = get_date_str()
+        with open(get_reports_dir() / f"trend_report_{today}.json") as f:
             report = TrendReport(**json.load(f))
-        with open(TMP_DIR / f"analysis_{today}.json") as f:
+        with open(get_reports_dir() / f"analysis_{today}.json") as f:
             analysis = json.load(f)
         asyncio.run(run_email(report, analysis, None))
     else:

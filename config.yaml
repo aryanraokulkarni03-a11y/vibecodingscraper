@@ -73,3 +73,13 @@ hackernews:
     - "SaaS"
     - "AI startup"
     - "indie maker"
+
+trending_tools:
+  source_url: "https://www.futurepedia.io/trending"
+  max_items: 10
+  selectors:
+    card: ".tool-card"  # Example selector, will need adjustment based on actual site
+    title: "h3"
+    url: "a"
+    description: "p"
+
